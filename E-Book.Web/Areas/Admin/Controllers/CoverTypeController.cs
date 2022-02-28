@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace E_Book.Web.Controllers
 {
+    [Area("Admin")]
     public class CoverTypeController : Controller
     {
         private readonly IUnitOfWork _unitofwork;
