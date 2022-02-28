@@ -1,4 +1,5 @@
 ﻿using E_Book.DataAccess;
+using E_Book.DataAccess.Repository.IRepository;
 using E_Book.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -10,14 +11,14 @@ namespace E_Book.Web.Controllers
 {
     public class CoverTypeController : Controller
     {
-        private readonly ApplicationDbContext _db;
-        public CoverTypeController(ApplicationDbContext db)
+        private readonly IUnitOfWork _unitofwork;
+        public CoverTypeController(IUnitOfWork unitofwork)
         {
-            _db = db;
+            _unitofwork = unitofwork;
         }
         public IActionResult Index()
         {
-            IEnumerable<CoverType> objCoverType = _db.CoverTypes.ToList();
+            IEnumerable<CoverType> objCoverType = _unitofwork.CoverType.GetAll();
             return View(objCoverType);
         }
         public IActionResult Create()
@@ -25,14 +26,20 @@ namespace E_Book.Web.Controllers
             return View();
         }
         [HttpPost]
-        [AutoValidateAntiforgeryToken]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(CoverType obj)
         {
+            var checkname = _unitofwork.CoverType.GetFirstorDeafult(x => x.Name == obj.Name);
+            if(checkname !=null)
+            {
+                ModelState.AddModelError("Name", "This Type Of Book Cover Already Exists !");
+            }
             if(ModelState.IsValid)
             {
-                _db.Add(obj);
-                _db.SaveChanges();
-                RedirectToAction("Index");
+                _unitofwork.CoverType.Add(obj);
+                _unitofwork.Save();
+                TempData["sucess"] = "Cover Type Added Sucessfully";
+                return RedirectToAction("Index");
             }
             return View();
         }
@@ -44,7 +51,7 @@ namespace E_Book.Web.Controllers
                 return NotFound();
             }
            
-            var getidforCoverType = _db.CoverTypes.FirstOrDefault(x=> x.Id==id);
+            var getidforCoverType = _unitofwork.CoverType.GetFirstorDeafult(x=> x.Id==id);
             
             if(getidforCoverType == null)
             {
@@ -53,12 +60,14 @@ namespace E_Book.Web.Controllers
             return View(getidforCoverType);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Edit(CoverType obj)
         {
             if (ModelState.IsValid)
             {
-               _db.Update(obj);
-               _db.SaveChanges();
+                _unitofwork.CoverType.Update(obj);
+                _unitofwork.Save();
+                TempData["sucess"] = "Cover Type Updated Sucessfully";
                return RedirectToAction("Index");
             }
             return View();
@@ -71,7 +80,7 @@ namespace E_Book.Web.Controllers
                 return NotFound();
             }
 
-            var getidforCoverType = _db.CoverTypes.FirstOrDefault(x => x.Id == id);
+            var getidforCoverType = _unitofwork.CoverType.GetFirstorDeafult(x => x.Id == id);
 
             if (getidforCoverType == null)
             {
@@ -79,16 +88,18 @@ namespace E_Book.Web.Controllers
             }
             return View(getidforCoverType);
         }
-        [HttpPost,ActionName("Delete")]
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
         public IActionResult DeletePOST(int? id)
         {
-            var obj = _db.CoverTypes.FirstOrDefault(x => x.Id == id);
+            var obj = _unitofwork.CoverType.GetFirstorDeafult(x => x.Id == id);
             if (obj == null)
             {
                 return NotFound();
             }
-            _db.Remove(obj);
-            _db.SaveChanges();
+            _unitofwork.CoverType.Remove(obj);
+            _unitofwork.Save();
+            TempData["sucess"] = "Cover Type Deleted Sucessfully";
             return RedirectToAction("Index");
             
             

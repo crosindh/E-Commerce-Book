@@ -8,16 +8,16 @@ using System.Threading.Tasks;
 
 namespace E_Book.DataAccess.Repository
 {
-    public class CategoryRespository : Repository<Category>, ICategoryRepository
+    public class CoverTypeRepository : Repository<CoverType>, ICoverTypeRepository
     {
         private ApplicationDbContext _db;
-        public CategoryRespository(ApplicationDbContext db) : base(db)
+        public CoverTypeRepository(ApplicationDbContext db) : base(db)
         {
             _db = db;
         }
-        public void Update(Category obj)
+        public void Update(CoverType obj)
         {
-            _db.Categories.Update(obj);
+            _db.CoverTypes.Update(obj);
         }
     }
 }
