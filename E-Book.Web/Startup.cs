@@ -1,4 +1,6 @@
 using E_Book.DataAccess;
+using E_Book.DataAccess.Repository;
+using E_Book.DataAccess.Repository.IRepository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -29,6 +31,7 @@ namespace E_Book.Web
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(
                 Configuration.GetConnectionString("E-BookDbContext")
                 ));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddRazorPages().AddRazorRuntimeCompilation();
         }
 

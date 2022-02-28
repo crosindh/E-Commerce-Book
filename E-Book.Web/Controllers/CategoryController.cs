@@ -1,4 +1,5 @@
 ﻿using E_Book.DataAccess;
+using E_Book.DataAccess.Repository.IRepository;
 using E_Book.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -10,15 +11,15 @@ namespace E_Book.Web.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ApplicationDbContext _db;
-        public CategoryController(ApplicationDbContext db)
+        private readonly IUnitOfWork _unitofwork;
+        public CategoryController(IUnitOfWork unitofwork)
         {
-            _db = db;
+            _unitofwork = unitofwork;
         }
 
         public IActionResult Index()
         {
-            IEnumerable<Category> ObjCategoryList = _db.Categories;
+            IEnumerable<Category> ObjCategoryList = _unitofwork.Category.GetAll();
             return View(ObjCategoryList);
         }
 
@@ -39,8 +40,8 @@ namespace E_Book.Web.Controllers
             }
             if (ModelState.IsValid)
             {
-                _db.Add(obj);
-                _db.SaveChanges();
+                _unitofwork.Category.Add(obj);
+                _unitofwork.Save();
                 TempData["sucess"] = "Category Added Sucessfully";
                 return RedirectToAction("Index");
             }
@@ -54,8 +55,8 @@ namespace E_Book.Web.Controllers
             {
                 return NotFound();
             }
-            
-            var CategoryidFromDB = _db.Categories.Find(id);
+
+            var CategoryidFromDB = _unitofwork.Category.GetFirstorDeafult(x=> x.Id==id);
             
             if (CategoryidFromDB == null)
             {
@@ -75,8 +76,8 @@ namespace E_Book.Web.Controllers
             }
             if (ModelState.IsValid)
             {
-                _db.Update(obj);
-                _db.SaveChanges();
+                _unitofwork.Category.Update(obj);
+                _unitofwork.Save();
                 TempData["sucess"] = "Category Updated Sucessfully";
                 return RedirectToAction("Index");
             }
@@ -91,7 +92,7 @@ namespace E_Book.Web.Controllers
                 return NotFound();
             }
 
-            var CategoryidFromDB = _db.Categories.Find(id);
+            var CategoryidFromDB = _unitofwork.Category.GetFirstorDeafult(x => x.Id == id);
 
             if (CategoryidFromDB == null)
             {
@@ -105,13 +106,13 @@ namespace E_Book.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeletePOST(int?id)
         {
-            var obj = _db.Categories.Find(id);
-            if(obj==null)
+            var obj = _unitofwork.Category.GetFirstorDeafult(x => x.Id == id);
+            if (obj==null)
             {
                 return NotFound();
             }
-            _db.Remove(obj);
-            _db.SaveChanges();
+            _unitofwork.Category.Remove(obj);
+            _unitofwork.Save();
             TempData["sucess"] = "Category Deleted Sucessfully";
             return RedirectToAction("Index");
 
