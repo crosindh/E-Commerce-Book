@@ -1,6 +1,7 @@
 ﻿using E_Book.DataAccess;
 using E_Book.DataAccess.Repository.IRepository;
 using E_Book.Models;
+using E_Book.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
@@ -26,36 +27,34 @@ namespace E_Book.Web.Controllers
 
         public IActionResult Upsert(int? id)
         {
-            Product product = new Product();
-            
-            IEnumerable<SelectListItem> CategoryList = _unitofwork.Category.GetAll().Select(
-                u => new SelectListItem
+            ProductVM productVM = new()
+            {
+                Product = new(),
+                CategoryList = _unitofwork.Category.GetAll().Select(x => new SelectListItem
                 {
-                    Text = u.Name,
-                    Value = u.Id.ToString()
-
-                });
-            IEnumerable<SelectListItem> CoverTypeList = _unitofwork.CoverType.GetAll().Select(
-              u => new SelectListItem
-              {
-                  Text = u.Name,
-                  Value = u.Id.ToString()
-
-              });
+                    Text = x.Name,
+                    Value = x.Id.ToString()
+                }),
+                CoverTypeList = _unitofwork.CoverType.GetAll().Select(x => new SelectListItem
+                {
+                    Text = x.Name,
+                    Value = x.Id.ToString()
+                })
+            };
+           
 
             if (id==null || id==0)
             {
                 // Create New Product
-                ViewBag.CategoryList = CategoryList;
-                ViewData["CoverTypeList"] = CoverTypeList;
-                return View(product);
+              
+                return View(productVM);
             }
             else
             {
                 //Update Productc
 
             }
-            return View(product);
+            return View(productVM);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
