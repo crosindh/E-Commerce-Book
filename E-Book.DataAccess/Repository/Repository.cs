@@ -22,17 +22,31 @@ namespace E_Book.DataAccess.Repository
         {
             dbset.Add(entity);
         }
-
-        public IEnumerable<G> GetAll()
+        // IncludeProp = "Category,CoverTypes it should work with multiple commas aswell"
+        public IEnumerable<G> GetAll(string? includeProperties = null)
         {
             IQueryable<G> query = dbset;
+            if(includeProperties != null)
+            {
+                foreach(var IncludeProp in includeProperties.Split(new char[] {','},StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(IncludeProp);
+                }
+            }
             return query.ToList();
         }
 
-        public G GetFirstorDeafult(Expression<Func<G, bool>> filter)
+        public G GetFirstorDeafult(Expression<Func<G, bool>> filter, string? includeProperties = null)
         {
             IQueryable<G> query = dbset;
             query = query.Where(filter);
+            if (includeProperties != null)
+            {
+                foreach (var IncludeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(IncludeProp);
+                }
+            }
             return query.FirstOrDefault();
         }
 
