@@ -73,49 +73,35 @@ namespace E_Book.Web.Controllers
                     string filename = Guid.NewGuid().ToString();
                     var uploads =Path.Combine(wwwRootPath,@"images\products");
                     var extention = Path.GetExtension(file.FileName);
+
+                    if(obj.Product.ImageURL !=null)
+                    {
+                        var oldPathImage = Path.Combine(wwwRootPath, obj.Product.ImageURL.TrimStart('\\'));
+                        if(System.IO.File.Exists(oldPathImage))
+                        {
+                            System.IO.File.Delete(oldPathImage);
+                        }
+                    }
+
                     using (var filestreams = new FileStream(Path.Combine(uploads, filename + extention), FileMode.Create))
                     {
                         file.CopyTo(filestreams);
                     }
                     obj.Product.ImageURL = @"\images\products\" + filename + extention;
                 }
-                _unitofwork.Product.Add(obj.Product);
+                if (obj.Product.Id == 0)
+                {
+                    _unitofwork.Product.Add(obj.Product);
+                }
+                else
+                {
+                    _unitofwork.Product.Update(obj.Product);
+                }
                 _unitofwork.Save();
                 TempData["sucess"] = "Product Created Sucessfully";
                return RedirectToAction("Index");
             }
             return View();
-        }
-
-        public IActionResult Delete(int? id)
-        {
-            if (id == null || id == 0)
-            {
-                return NotFound();
-            }
-
-            var getidforCoverType = _unitofwork.CoverType.GetFirstorDeafult(x => x.Id == id);
-
-            if (getidforCoverType == null)
-            {
-                return NotFound();
-            }
-            return View(getidforCoverType);
-        }
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeletePOST(int? id)
-        {
-            var obj = _unitofwork.CoverType.GetFirstorDeafult(x => x.Id == id);
-            if (obj == null)
-            {
-                return NotFound();
-            }
-            _unitofwork.CoverType.Remove(obj);
-            _unitofwork.Save();
-            TempData["sucess"] = "Cover Type Deleted Sucessfully";
-            return RedirectToAction("Index");
-            
         }
 
         #region API CALLS 
@@ -125,6 +111,26 @@ namespace E_Book.Web.Controllers
 
             return Json(new {data = productList});
         }
+
+        [HttpDelete]
+        public IActionResult Delete(int? id)
+        {
+            var obj = _unitofwork.Product.GetFirstorDeafult(x => x.Id == id);
+            if (obj == null)
+            {
+                return Json(new {success = false, message = "Error While Deleting" });
+            }
+            var oldPathImage = Path.Combine(_hostEnvironment.WebRootPath, obj.ImageURL.TrimStart('\\'));
+            if (System.IO.File.Exists(oldPathImage))
+            {
+                System.IO.File.Delete(oldPathImage);
+            }
+            _unitofwork.Product.Remove(obj);
+            _unitofwork.Save();
+            return Json(new {success = true, message = "Delete Successfull" });
+
+        }
+
         #endregion
     }
 }
