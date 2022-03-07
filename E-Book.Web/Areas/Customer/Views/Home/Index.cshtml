@@ -12,13 +12,13 @@
                         <div class="card-body">
                             <div class="p-1">
                                 <p class="card-title h5 text-primary">@product.Title</p>
-                                <p class="card-title h5 text-primary">By <b>@product.Author</b></p>
+                                <p class="card-title text-secondary">By <b>@product.Author</b></p>
                             </div>
                             <div class="p-1">
-                                <p>List Price: <strike><b>@product.ListPrice.ToString("0.00") PKR</b></strike></p>
+                                <p>List Price: <strike><b>@product.ListPrice.ToString("c")</b></strike></p>
                             </div>
                             <div class="p-1">
-                                <p>As Low as: <b>@product.Price.ToString("0.00") PKR</b></p>
+                                <p>As Low as: <b>@product.Price.ToString("c")</b></p>
                             </div>
                         </div>
                     </div>

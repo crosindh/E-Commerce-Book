@@ -1,5 +1,6 @@
 ﻿using E_Book.DataAccess.Repository.IRepository;
 using E_Book.Models;
+using E_Book.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -27,6 +28,15 @@ namespace E_Book.Web.Controllers
             return View(productList);
         }
 
+        public IActionResult Details(int id)
+        {
+            ShoppingCart carobj = new()
+            {
+                Count = 1,
+                Product = _unitOfWork.Product.GetFirstorDeafult(x => x.Id == id, includeProperties: "Category,CoverType")
+            };
+            return View(carobj);
+        }
         public IActionResult Privacy()
         {
             return View();
