@@ -1,10 +1,12 @@
 using E_Book.DataAccess;
 using E_Book.DataAccess.Repository;
 using E_Book.DataAccess.Repository.IRepository;
+using E_Book.Utility;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,13 +37,14 @@ namespace E_Book.Web
                 Configuration.GetConnectionString("E-BookDbContext")
                 ));
             
-            services.AddDefaultIdentity<IdentityUser>()
+            services.AddIdentity<IdentityUser,IdentityRole>().AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             
             services.AddRazorPages().AddRazorRuntimeCompilation();
-            
+
+            services.AddSingleton<IEmailSender, EmailSender>();        
         
 
 

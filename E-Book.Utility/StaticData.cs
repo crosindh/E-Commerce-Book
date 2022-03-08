@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace E_Book.Utility
 {
-    class StaticData
+    public class StaticData
     {
+        public const string Role_User_Individual = "Individual";
+        public const string Role_User_Company = "Company";
+        public const string Role_Admin = "Admin";
+        public const string Role_Employee = "Employee";
     }
 }
