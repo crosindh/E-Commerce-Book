@@ -44,8 +44,24 @@ namespace E_Book.Web
             
             services.AddRazorPages().AddRazorRuntimeCompilation();
 
-            services.AddSingleton<IEmailSender, EmailSender>();        
-        
+            services.AddSingleton<IEmailSender, EmailSender>();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Identity/Account/Login";
+                options.LogoutPath = "/Identity/Account/Logout";
+                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                
+                //options.Cookie.Name = "YourAppCookieName";
+                //options.Cookie.HttpOnly = true;
+                //options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+
+                //// ReturnUrlParameter requires 
+                ////using Microsoft.AspNetCore.Authentication.Cookies;
+                //options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
+                //options.SlidingExpiration = true;
+            });
+
 
 
         }

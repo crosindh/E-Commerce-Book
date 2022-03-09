@@ -23,10 +23,14 @@ namespace E_Book.DataAccess.Repository
             dbset.Add(entity);
         }
         // IncludeProp = "Category,CoverTypes it should work with multiple commas aswell"
-        public IEnumerable<G> GetAll(string? includeProperties = null)
+        public IEnumerable<G> GetAll(Expression<Func<G, bool>>? filter=null, string? includeProperties = null)
         {
             IQueryable<G> query = dbset;
-            if(includeProperties != null)
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+            if (includeProperties != null)
             {
                 foreach(var IncludeProp in includeProperties.Split(new char[] {','},StringSplitOptions.RemoveEmptyEntries))
                 {

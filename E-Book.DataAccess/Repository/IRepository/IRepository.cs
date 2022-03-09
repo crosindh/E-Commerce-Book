@@ -11,7 +11,7 @@ namespace E_Book.DataAccess.Repository.IRepository
     {
         //G - Generic Interface For CRUD
         G GetFirstorDeafult(Expression<Func<G, bool>> filter, string? includeProperties = null);
-        IEnumerable<G> GetAll(string? includeProperties = null);
+        IEnumerable<G> GetAll(Expression<Func<G, bool>>? filter=null, string? includeProperties = null);
         void Add(G entity);
         void Remove(G entity);
         void RemoveRange(IEnumerable<G> entity);
