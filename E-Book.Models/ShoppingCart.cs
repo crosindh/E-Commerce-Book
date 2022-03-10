@@ -26,5 +26,8 @@ namespace E_Book.Models
         [ValidateNever]
         public Product Product { get; set; }
 
+        [NotMapped]
+        public double Price { get; set; }
+
     }
 }
