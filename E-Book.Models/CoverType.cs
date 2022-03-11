@@ -12,6 +12,7 @@ namespace E_Book.Models
     {
         [Key]
         public int Id { get; set; }
+        
         [Required]
         [DisplayName("Cover Type")]
         public string Name { get; set; }
