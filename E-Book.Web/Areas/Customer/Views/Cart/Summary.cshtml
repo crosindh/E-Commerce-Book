@@ -1,6 +1,6 @@
-﻿@*@model E_Book.Models.ViewModels.ShoppingCartVM
-@using Microsoft.Extensions.Options
-@inject IOptions<BulkyBook.Utility.StripeSettings> Stripe
+﻿@model E_Book.Models.ViewModels.ShoppingCartVM
+@*@using Microsoft.Extensions.Options
+@inject IOptions<BulkyBook.Utility.StripeSettings> Stripe*@
 
 <form method="post">
     <br />
@@ -88,15 +88,16 @@
                             <ul class="list-group mb-3">
                                 @foreach (var details in Model.ListCart)
                                 {
-                    <li class="list-group-item d-flex justify-content-between">
-                        <div>
-                            <h6 class="my-0">@details.Product.Title</h6>
-                            <small class="text-muted">Quantity: @details.Count</small>
-                        </div>
-                        <span class="text-muted">@((details.Price * details.Count).ToString("c")) </span>
-                    </li>}
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="my-0">@details.Product.Title</h6>
+                                            <small class="text-muted">Quantity: @details.Count</small>
+                                        </div>
+                                        <span class="text-muted">@((details.Price * details.Count).ToString("c")) </span>
+                                    </li>
+                                }
                                 <li class="list-group-item d-flex justify-content-between bg-light">
-                                    <small class="text-info">Total (USD)</small>
+                                    <small class="text-info">Total (RS)</small>
                                     <strong class="text-info">@Model.OrderHeader.OrderTotal.ToString("c")</strong>
                                 </li>
                             </ul>
@@ -119,5 +120,5 @@
             </div>
         </div>
     </div>
-</form>*@
+</form>
 
