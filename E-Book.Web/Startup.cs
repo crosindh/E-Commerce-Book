@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Stripe;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,8 @@ namespace E_Book.Web
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(
                 Configuration.GetConnectionString("E-BookDbContext")
                 ));
+
+            services.Configure<StripeSettings>(Configuration.GetSection("Stripe"));
             
             services.AddIdentity<IdentityUser,IdentityRole>().AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -82,7 +85,10 @@ namespace E_Book.Web
             app.UseStaticFiles();
 
             app.UseRouting();
-            
+
+            StripeConfiguration.ApiKey = Configuration.GetSection("Stripe:Secretkey").Get<string>();
+
+
             app.UseAuthentication();
 
             app.UseAuthorization();
